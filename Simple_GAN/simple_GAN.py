@@ -60,6 +60,7 @@ class simpleGAN:
 		return d4
 
 	def generator(batch_size, z_dim):
+
 		z = tf.truncated_normal([batch_size, z_dim], mean=0, stddev=1, name='z')
 	#first deconv block
 		g_w1 = tf.get_variable('g_w1', [z_dim, 3136], dtype=tf.float32, initializer=tf.truncated_normal_initializer(stddev=0.02))
