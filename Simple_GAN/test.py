@@ -22,6 +22,8 @@ sess=tf.Session()
 
 batch_size=50
 z_dimensions=100
+iterations=3000
+
 x_placeholder=tf.placeholder("float32",shape=[None,28,28,1],name="placeholder_x")
 with tf.variable_scope(tf.get_variable_scope()) as scope:
 	Gz=simpleGAN.generator(batch_size,z_dimensions)
@@ -56,11 +58,17 @@ with tf.variable_scope(tf.get_variable_scope(), reuse=False):
 	g_trainer = tf.train.AdamOptimizer(0.0001).minimize(g_loss, var_list=g_vars)	
 
 sess.run(tf.global_variables_initializer())
-iterations=3000
+
+
+
 for iteration in range(iterations):
 	real_image_batch = mnist.train.next_batch(batch_size)[0].reshape([batch_size, 28, 28, 1])
 
 	_, dLossReal, dLossFake, gLoss = sess.run([d_trainer_fake, d_loss_real, d_loss_fake, g_loss],
+                                                    {x_placeholder: real_image_batch})
+	_, dLossReal, dLossFake, gLoss = sess.run([d_trainer_real, d_loss_real, d_loss_fake, g_loss],
+                                                    {x_placeholder: real_image_batch})
+	_, dLossReal, dLossFake, gLoss = sess.run([g_trainer, d_loss_real, d_loss_fake, g_loss],
                                                     {x_placeholder: real_image_batch})
 
 	print(iteration)
